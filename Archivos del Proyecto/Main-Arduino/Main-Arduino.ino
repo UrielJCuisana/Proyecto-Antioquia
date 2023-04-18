@@ -4,6 +4,7 @@
 #include <DHT.h>
 #include <RF24.h>
 #include <LiquidCrystal_I2C.h>
+#include <SD.h>
 
 #define DHTPIN 2
 #define DHTTYPE DHT11
@@ -15,25 +16,45 @@ RF24 radio(9, 10); // CE, CSN
 
 const byte address[6] = "12312";
 
-LiquidCrystal_I2C lcd(0x27, 16, 2); // Cambiar el Address de I2c
+LiquidCrystal_I2C lcd(0x27, 16, 2); // I2C address y tamaño pantalla 16x2
 
+File dataFile;
+unsigned long counter = 0; // Counter Para incrementar "timestamp"
+float gh = A0;
 void setup() {
+  pinMode(gh, INPUT);
   Serial.begin(9600);
   dht.begin();
-  /*if (!bme.begin(0x76)) {
-    Serial.println("Could not find a valid BMP280 sensor, check wiring!");
-    while (1);
-  }*/
 
   radio.begin();
   radio.openWritingPipe(address);
   radio.setPALevel(RF24_PA_MIN);
   radio.stopListening();
 
-  lcd.init();                      // Inicializar LCD
-  lcd.backlight();                 // Apagar Backlight
-  lcd.setCursor(0, 0);             // Poner cursor a primera columna, primera fila
-  lcd.print("LCD is working!");    // Probar LCD
+  // Initializar la LCD
+  lcd.init();
+  lcd.backlight();
+  lcd.clear();
+
+  // Initializar la tarjeta SD
+  if (!SD.begin(4)) {
+    Serial.println("Inicializacion SD Fallada!");
+    lcd.setCursor(0,0);
+    lcd.print("N/A");
+    while (1);
+  }
+
+  // Crear y abrir un nuevo file CSV
+  String fileName = "data.csv";
+  dataFile = SD.open(fileName, FILE_WRITE);
+  if (dataFile) {
+    dataFile.println("time,temperature,humidity,pressure");
+    dataFile.close();
+    //Serial.println("Sdcardcorrect");
+  } else {
+    Serial.println("Error creating data.csv file!");
+    while (1);
+  }
 }
 
 void loop() {
@@ -41,24 +62,46 @@ void loop() {
   float h = dht.readHumidity();
   float t = dht.readTemperature();
   float p = bme.readPressure() / 100.0F;
+  // Incrementar timestamp por 5 segundos
+  counter += 5;
   
-  lcd.clear();                     // Clear LCD
-  lcd.setCursor(0, 0);             // Poner cursor a primera columna, primera fila
-  lcd.print("Temperature: ");      // Exibir Label temperatura
-  lcd.print(t);                    // Exibir valor temperatura
-  lcd.setCursor(0, 1);             // poner cursor a primera columna, segunda fila
-  lcd.print("Humidity: ");         // Exibir Label Humedad
-  lcd.print(100-h);                // Exibir valor Humedad
-  lcd.setCursor(8, 1);             // Poner cursor en la novena columna, segunda fila
-  lcd.print("%");                  // Exibir simbolo porcentaje
-  
-  // Transmitir datos sobre NRF24L01
-  String message = String(t) + "," + String(h) + "," + String(p);
-  radio.write(&message, sizeof(message));
+  //Exponer la información en el monitor Serial
+  //Serial.print(counter);
+  //Serial.print(",");
   Serial.print(t);
   Serial.print(",");
-  Serial.print(100-h);
+  Serial.print(100 - h);
   Serial.print(",");
-  Serial.println("1013"); // Sensor de presion fallo, hay que arreglar.
+  Serial.print(gh);
   Serial.println();
+
+  //Write la data a el doc CSV
+  dataFile = SD.open("data.csv", FILE_WRITE);
+  if (dataFile) {
+    dataFile.print(counter);
+    dataFile.print(",");
+    dataFile.print(t);
+    dataFile.print(",");
+    dataFile.print(100 - h);
+    dataFile.print(",");
+    dataFile.println(gh);
+    dataFile.close();
+  } else {
+    Serial.println("Error opening data.csv file!");
+  }
+
+  // Transmitir data sobre nRF24L01
+  String message = String(t) + "," + String(h) + "," + String(p);
+  radio.write(&message, sizeof(message));
+
+  // exponer data en la LCD
+  lcd.setCursor(0, 0);
+  lcd.print("Temp: ");
+  lcd.print(t);
+  lcd.print("C");
+
+  lcd.setCursor(0, 1);
+  lcd.print("Humidity: ");
+  lcd.print(100 - h);
+  lcd.print("%");
 }
