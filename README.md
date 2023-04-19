@@ -1,4 +1,4 @@
-# Antioquia: Proyecto-EKKO
+# Antioquía: Proyecto-EKKO
 Sistema de Monitoreo Ambiental
 
 
