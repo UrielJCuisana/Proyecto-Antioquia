@@ -38,7 +38,7 @@ PlotDelCSV1.py
 Este es el programa principal de Python utilizado para recopilar y almacenar datos de los sensores en un archivo CSV. Asegúrate de ejecutar este programa antes de ejecutar el programa PlotFromCSV.py.
 
 PlotDelCSV2.py
-Este es un programa adicional de Python utilizado para graficar los datos almacenados en el archivo CSV. Ejecuta este programa después de ejecutar el programa PlotFromCSV.py para visualizar los datos en tiempo real.
+Este es un programa adicional de Python utilizado para graficar los datos almacenados en el archivo CSV. Ejecuta este programa después de ejecutar el programa PlotFromCSV.py para visualizar los datos a tiempo real.
 
 Adjuntar_CSV.py
 Este programa de Python se utiliza para enviar los datos del archivo CSV a un servidor o para compartirlos en línea. Puedes personalizar este programa según tus necesidades.
