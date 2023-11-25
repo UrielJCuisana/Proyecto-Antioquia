@@ -1,6 +1,6 @@
 # Antioquía: Proyecto-EKKO
 Sistema de Monitoreo Ambiental
-[Technical Document]([url](https://github.com/UrielJCuisana/Proyecto-Antioquia/blob/main/Archivos%20del%20Proyecto/Documento%20Tecnico%20-%20Proyecto%20EKKO.odt))
+# [Technical Document]([url](https://github.com/UrielJCuisana/Proyecto-Antioquia/blob/main/Archivos%20del%20Proyecto/Documento%20Tecnico%20-%20Proyecto%20EKKO.odt))
 
 # Introducción
 Este proyecto es una estación meteorológica inalámbrica que utiliza un Arduino Nano y sensores para medir la temperatura, humedad y presión atmosférica. Los datos se transmiten a un receptor Python que los almacena en un archivo CSV y luego los grafica en tiempo real. En este documento, se proporciona una guía para configurar el hardware y el software necesarios para ejecutar este proyecto.
