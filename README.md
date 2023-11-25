@@ -1,5 +1,6 @@
 # Antioquía: Proyecto-EKKO
-Sistema de Monitoreo Ambiental
+Sistema de Monitoreo Ambiental.
+
 Technical Document: https://github.com/UrielJCuisana/Proyecto-Antioquia/blob/main/Archivos%20del%20Proyecto/Documento%20Tecnico%20-%20Proyecto%20EKKO.odt))
 
 # Introducción
